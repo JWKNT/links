@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A searchable, personally curated collection of links and notes.">
+    <meta name="theme-color" content="#ffffff">
+    <title>Links</title>
+    <script src="https://jwknt.github.io/site-theme/v1/theme.js"></script>
+    <link rel="stylesheet" href="https://jwknt.github.io/site-theme/v1/base.css">
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#link-list">Skip to links</a>
+
+    <header class="site-header">
+      <a class="site-title" href="./">Links</a>
+      <nav aria-label="Site links">
+        <a href="links.md">Source</a>
+        <a href="https://github.com/JWKNT/links">GitHub</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Use dark theme">◐</button>
+      </nav>
+    </header>
+
+    <main class="link-shell">
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <h1 id="page-title">Links</h1>
+          <p>A long-form collection. Categories and descriptions come directly from <a href="links.md">links.md</a>.</p>
+        </div>
+        <p class="total" id="total-count" aria-live="polite">Loading…</p>
+      </section>
+
+      <section class="controls" aria-label="Search and sorting controls">
+        <label class="search-control" for="link-search">
+          <span>Search</span>
+          <input id="link-search" type="search" autocomplete="off" placeholder="Title, description, category, or URL" spellcheck="false">
+          <kbd>⌘K</kbd>
+        </label>
+        <label for="category-select">
+          <span>Category</span>
+          <select id="category-select"><option value="">All categories</option></select>
+        </label>
+        <label for="sort-select">
+          <span>Sort</span>
+          <select id="sort-select">
+            <option value="document">Document order</option>
+            <option value="category">Category A–Z</option>
+            <option value="title">Title A–Z</option>
+          </select>
+        </label>
+        <button class="text-button" id="reset-controls" type="button" hidden>Reset</button>
+      </section>
+
+      <p class="result-status" id="result-status" role="status" aria-live="polite"></p>
+      <div id="link-list"></div>
+
+      <div class="empty-state" id="empty-state" hidden>
+        <p>No links match this view.</p>
+        <button type="button" id="empty-reset">Clear search and filters</button>
+      </div>
+
+      <nav class="pagination" id="pagination" aria-label="Results pages" hidden>
+        <button id="previous-page" type="button">← Previous</button>
+        <span id="page-status"></span>
+        <button id="next-page" type="button">Next →</button>
+      </nav>
+    </main>
+
+    <template id="category-template">
+      <section class="link-group">
+        <h2></h2>
+        <ol></ol>
+      </section>
+    </template>
+
+    <template id="link-template">
+      <li class="link-entry">
+        <a class="link-title" rel="noreferrer"></a>
+        <p class="link-description"></p>
+        <span class="link-host"></span>
+      </li>
+    </template>
+
+    <script src="assets/app.js"></script>
+  </body>
+</html>
