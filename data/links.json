@@ -1,5 +1,5 @@
 {
-  "source": "links.md",
+  "source": "links/*.md",
   "categories": [],
   "links": []
 }

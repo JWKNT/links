@@ -4,21 +4,21 @@ A searchable, long-form link collection published as a static site. The site has
 
 ## Add links
 
-Edit [`links.md`](links.md). Headings create categories; each Markdown link starts an entry; the prose beneath it becomes its description.
+Create Markdown files in [`links/`](links/). Each filename minus `.md` is the category name, exactly as written. The files are read alphabetically; each Markdown link starts an entry, and the prose beneath it becomes its description.
 
 ```md
-# Papers
+# links/arxiv.md
 
 [A paper title](https://example.com/paper)
 A note about the paper and why it matters.
 
-# Any category you want
+# links/news.md
 
 [A useful page](https://example.com/page)
 A longer description can continue across lines.
 ```
 
-Angle-bracket headings such as `<papers>` are also accepted. A bare URL is accepted and uses its hostname as the title. Nothing in the application defines or limits category names.
+Do not add a category heading inside a file; the filename already supplies it. A bare URL is accepted and uses its hostname as the title. Nothing in the application defines or limits category names: `arxiv.md` creates `arxiv`, `Wikipedia.md` creates `Wikipedia`, and `machine learning.md` creates `machine learning`.
 
 After editing, rebuild and test:
 
