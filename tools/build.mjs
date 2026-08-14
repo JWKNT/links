@@ -1,9 +1,9 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const sourcePath = path.join(root, "links.md");
+const sourceDirectory = path.join(root, "links");
 const outputPath = path.join(root, "data", "links.json");
 
 function cleanInlineMarkdown(value) {
@@ -13,14 +13,20 @@ function cleanInlineMarkdown(value) {
     .trim();
 }
 
-export function parseLinksDocument(source) {
+export function categoryFromFilename(filename) {
+  if (!filename.toLocaleLowerCase("en").endsWith(".md")) {
+    throw new Error(`“${filename}” is not a Markdown filename.`);
+  }
+  const category = filename.slice(0, -3).trim();
+  if (!category) throw new Error(`“${filename}” does not contain a category name.`);
+  return category;
+}
+
+export function parseCategoryDocument(source, category, sourceName = `${category}.md`) {
   const withoutComments = source.replace(/<!--[\s\S]*?-->/g, "");
   const lines = withoutComments.split(/\r?\n/);
-  const categories = [];
   const links = [];
-  const categoryNames = new Set();
   const urls = new Set();
-  let category = null;
   let current = null;
 
   const finishEntry = () => {
@@ -37,51 +43,26 @@ export function parseLinksDocument(source) {
     const trimmed = raw.trim();
     if (!trimmed) continue;
 
-    const markdownHeading = trimmed.match(/^#{1,6}\s+(.+?)\s*#*$/);
-    const angleHeading = trimmed.match(/^<([^<>/]+)>$/);
-    const closingAngleHeading = trimmed.match(/^<\/([^<>]+)>$/);
-
-    if (closingAngleHeading) {
-      finishEntry();
-      category = null;
-      continue;
-    }
-
-    if (markdownHeading || angleHeading) {
-      finishEntry();
-      category = cleanInlineMarkdown((markdownHeading || angleHeading)[1]);
-      if (!category) throw new Error(`Line ${lineNumber}: category name is empty.`);
-      const key = category.toLocaleLowerCase("en");
-      if (categoryNames.has(key)) {
-        throw new Error(`Line ${lineNumber}: duplicate category “${category}”. Keep each category in one section.`);
-      }
-      categoryNames.add(key);
-      categories.push(category);
-      continue;
-    }
-
     const markdownLink = trimmed.match(/^(?:[-*+]\s+)?\[([^\]]+)]\((https?:\/\/[^\s)]+)\)(?:\s*[—–-]\s*(.*))?$/i);
     const bareLink = trimmed.match(/^(?:[-*+]\s+)?(https?:\/\/\S+)(?:\s+[—–-]\s+(.*))?$/i);
 
     if (markdownLink || bareLink) {
       finishEntry();
-      if (!category) throw new Error(`Line ${lineNumber}: add a category heading before the first link.`);
 
       const url = (markdownLink ? markdownLink[2] : bareLink[1]).replace(/[.,;:]$/, "");
       let parsed;
       try {
         parsed = new URL(url);
       } catch {
-        throw new Error(`Line ${lineNumber}: “${url}” is not a valid URL.`);
+        throw new Error(`${sourceName}:${lineNumber}: “${url}” is not a valid URL.`);
       }
-      if (!/^https?:$/.test(parsed.protocol)) throw new Error(`Line ${lineNumber}: only http and https links are supported.`);
-      if (urls.has(parsed.href)) throw new Error(`Line ${lineNumber}: duplicate URL “${parsed.href}”.`);
+      if (!/^https?:$/.test(parsed.protocol)) throw new Error(`${sourceName}:${lineNumber}: only http and https links are supported.`);
+      if (urls.has(parsed.href)) throw new Error(`${sourceName}:${lineNumber}: duplicate URL “${parsed.href}”.`);
       urls.add(parsed.href);
 
       const title = cleanInlineMarkdown(markdownLink ? markdownLink[1] : parsed.hostname.replace(/^www\./, ""));
       const inlineDescription = markdownLink ? markdownLink[3] : bareLink[2];
       current = {
-        id: links.length + 1,
         category,
         title,
         url: parsed.href,
@@ -91,19 +72,46 @@ export function parseLinksDocument(source) {
     }
 
     if (!current) {
-      throw new Error(`Line ${lineNumber}: expected a link beneath the “${category || "(missing)"}” category.`);
+      throw new Error(`${sourceName}:${lineNumber}: expected a link. The filename already supplies the category.`);
     }
     current.descriptionLines.push(cleanInlineMarkdown(trimmed));
   }
 
   finishEntry();
-  const usedCategories = categories.filter((name) => links.some((link) => link.category === name));
-  return { source: "links.md", categories: usedCategories, links };
+  return links;
+}
+
+export async function buildCollection(directory = sourceDirectory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = entries
+    .filter((entry) => entry.isFile() && !entry.name.startsWith(".") && entry.name.toLocaleLowerCase("en").endsWith(".md"))
+    .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }));
+  const categories = [];
+  const links = [];
+  const categoryNames = new Set();
+  const urls = new Map();
+
+  for (const file of files) {
+    const category = categoryFromFilename(file.name);
+    const categoryKey = category.toLocaleLowerCase("en");
+    if (categoryNames.has(categoryKey)) throw new Error(`Duplicate category filename for “${category}”.`);
+    categoryNames.add(categoryKey);
+    categories.push(category);
+
+    const source = await readFile(path.join(directory, file.name), "utf8");
+    for (const link of parseCategoryDocument(source, category, file.name)) {
+      const previousFile = urls.get(link.url);
+      if (previousFile) throw new Error(`${file.name}: duplicate URL “${link.url}” already appears in ${previousFile}.`);
+      urls.set(link.url, file.name);
+      links.push({ id: links.length + 1, ...link });
+    }
+  }
+
+  return { source: "links/*.md", categories, links };
 }
 
 async function main() {
-  const source = await readFile(sourcePath, "utf8");
-  const data = parseLinksDocument(source);
+  const data = await buildCollection();
   await writeFile(outputPath, `${JSON.stringify(data, null, 2)}\n`, "utf8");
   process.stdout.write(`Built ${data.links.length} links across ${data.categories.length} categories.\n`);
 }
