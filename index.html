@@ -4,20 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="A searchable, personally curated collection of links and notes.">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#fbfaf7">
     <title>Links</title>
-    <script src="https://jwknt.github.io/site-theme/v1/theme.js"></script>
-    <link rel="stylesheet" href="https://jwknt.github.io/site-theme/v1/base.css">
+    <script src="https://jehlp.net/site-theme/v2/theme.js"></script>
+    <link rel="stylesheet" href="https://jehlp.net/site-theme/v2/base.css">
     <link rel="stylesheet" href="assets/styles.css">
   </head>
   <body>
     <a class="skip-link" href="#link-list">Skip to links</a>
 
-    <header class="site-header">
-      <a class="site-title" href="./">Links</a>
+    <header class="site-header site-header--identity">
+      <h1 class="site-title" id="page-title">Links</h1>
       <nav aria-label="Site links">
-        <a href="https://github.com/JWKNT/links/tree/main/links">Sources</a>
-        <a href="https://github.com/JWKNT/links">GitHub</a>
         <button class="theme-toggle" type="button" data-theme-toggle aria-label="Use dark theme">◐</button>
       </nav>
     </header>
@@ -25,8 +23,7 @@
     <main class="link-shell">
       <section class="intro" aria-labelledby="page-title">
         <div>
-          <h1 id="page-title">Links</h1>
-          <p>A long-form collection. Each Markdown file in <a href="https://github.com/JWKNT/links/tree/main/links">links/</a> is one category.</p>
+          <p>A personal collection of links and notes.</p>
         </div>
         <p class="total" id="total-count" aria-live="polite">Loading…</p>
       </section>
@@ -66,6 +63,8 @@
         <button id="next-page" type="button">Next →</button>
       </nav>
     </main>
+
+    <footer class="site-footer"><a href="https://github.com/JWKNT/links">Source</a></footer>
 
     <template id="category-template">
       <section class="link-group">

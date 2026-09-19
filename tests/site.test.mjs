@@ -57,7 +57,7 @@ test("the checked-in data matches the category directory", async () => {
 
 test("site references the shared theme and local application", async () => {
   const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
-  assert.match(html, /jwknt\.github\.io\/site-theme\/v1\/base\.css/);
+  assert.match(html, /jehlp\.net\/site-theme\/v2\/base\.css/);
   assert.match(html, /assets\/app\.js/);
   assert.match(html, /data-theme-toggle/);
 });
