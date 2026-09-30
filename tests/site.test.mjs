@@ -87,5 +87,6 @@ test('the page retains native Home in its existing header settings', async () =>
   assert.equal((html.match(/class="site-home"/g) || []).length, 1);
   assert.doesNotMatch(html, /site-home-dock/);
   assert.match(html, /<header[^>]*>[\s\S]*?<span class="site-utility-pair"><a class="site-home"[^>]*aria-label="Home — jehlp.net"[\s\S]*?<\/a><button[^>]*data-theme-toggle/);
-  for (const asset of ['base.css', 'theme.js']) assert.ok(html.includes(`${asset}?v=20260930-header-home`));
+  assert.ok(html.includes('base.css?v=20260930-mobile-header'));
+  assert.ok(html.includes('theme.js?v=20260930-header-home'));
 });
