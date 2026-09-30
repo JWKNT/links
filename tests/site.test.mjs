@@ -87,5 +87,5 @@ test('the page retains one native Home link before its content', async () => {
   assert.equal((html.match(/class="site-home-dock"/g) || []).length, 1);
   assert.match(html, /<body[^>]*>\s*<nav class="site-home-dock" aria-label="Site">/);
   assert.match(html, /class="site-home" href="https:\/\/jehlp\.net\/" aria-label="Home · jehlp.net"/);
-  for (const asset of ['base.css', 'theme.js']) assert.ok(html.includes(`${asset}?v=20260930-home`));
+  for (const asset of ['base.css', 'theme.js']) assert.ok(html.includes(`${asset}?v=20260930-home2`));
 });
