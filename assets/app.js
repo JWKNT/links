@@ -131,6 +131,12 @@
       const data = await response.json();
       state.categories = Array.isArray(data.categories) ? data.categories : [];
       state.links = Array.isArray(data.links) ? data.links.map(prepare) : [];
+      // This describes the loaded collection, not the current filter result.
+      // Set it only after success so later input cannot erase a load error.
+      elements.empty.querySelector("p").textContent = state.links.length === 0
+        ? "No links have been added yet."
+        : "No links match this view.";
+      elements.emptyReset.hidden = state.links.length === 0;
 
       const options = document.createDocumentFragment();
       const counts = new Map();

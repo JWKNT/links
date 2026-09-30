@@ -61,3 +61,22 @@ test("site references the shared theme and local application", async () => {
   assert.match(html, /assets\/app\.js/);
   assert.match(html, /data-theme-toggle/);
 });
+
+
+test("empty collection and filtered results have distinct recovery states", async () => {
+  const { runInNewContext } = await import("node:vm");
+  const source = await readFile(new URL("../assets/app.js", import.meta.url), "utf8");
+  const successfulLoad = source.match(/state.links = Array.isArray\(data.links\)[\s\S]*?elements.emptyReset.hidden = state.links.length === 0;/)[0];
+  for (const populated of [false, true]) {
+    const paragraph = { textContent: "" };
+    const elements = { empty: { querySelector: () => paragraph }, emptyReset: {} };
+    const state = {};
+    runInNewContext(successfulLoad, {
+      state, elements, data: { links: populated ? [{}] : [] }, prepare: value => value
+    });
+    assert.equal(elements.emptyReset.hidden, !populated);
+    assert.equal(paragraph.textContent, populated ? "No links match this view." : "No links have been added yet.");
+  }
+  const render = source.match(/function renderNow\(\) \{([\s\S]*?)\n  \}/)[0];
+  assert.doesNotMatch(render, /empty\.querySelector/, "filter changes must not overwrite a load failure message");
+});
