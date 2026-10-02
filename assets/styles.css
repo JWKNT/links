@@ -4,7 +4,7 @@ body {
   line-height: 1.55;
 }
 
-.site-header, .site-footer, .link-shell {
+.site-footer, .link-shell {
   width: min(860px, calc(100% - 44px));
   margin-inline: auto;
 }
@@ -218,14 +218,8 @@ a:focus-visible {
 }
 
 @media (max-width: 720px) {
-  .site-header,
   .link-shell {
     width: min(100% - 28px, 860px);
-  }
-
-  .site-header {
-    align-items: start;
-    padding-top: 14px;
   }
 
   .site-header nav {
