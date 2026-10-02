@@ -5,16 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="A searchable, personally curated collection of links and notes.">
     <meta name="theme-color" content="#fbfaf7">
-    <title>Links</title>
+    <title>Links · jehlp.net</title>
+    <link rel="canonical" href="https://jehlp.net/links/">
+    <link rel="icon" href="https://jehlp.net/site-theme/v2/favicons/links.png" type="image/png">
     <script src="https://jehlp.net/site-theme/v2/theme.js?v=20260930-header-home"></script>
     <link rel="stylesheet" href="https://jehlp.net/site-theme/v2/base.css?v=20260930-mobile-header">
+    <link rel="stylesheet" href="https://jehlp.net/site-theme/v2/components.css">
+    <script src="https://jehlp.net/site-theme/v2/components.js" defer></script>
     <link rel="stylesheet" href="assets/styles.css">
   </head>
   <body>
     <a class="skip-link" href="#link-list">Skip to links</a>
 
     <header class="site-header site-header--identity">
-      <h1 class="site-title" id="page-title">Links</h1>
+      <div class="site-brand"><img class="site-mark" src="https://jehlp.net/site-theme/v2/marks/links.png" width="32" height="32" alt=""><h1 class="site-title" id="page-title">Links</h1></div>
       <nav aria-label="Site links">
         <span class="site-utility-pair"><a class="site-home" href="https://jehlp.net/" aria-label="Home — jehlp.net" title="Home — jehlp.net"><span aria-hidden="true">✳</span></a><button class="theme-toggle" type="button" data-theme-toggle aria-label="Use dark theme">◐</button></span>
       </nav>
@@ -36,11 +40,11 @@
         </label>
         <label for="category-select">
           <span>Category</span>
-          <select id="category-select"><option value="">All categories</option></select>
+          <select id="category-select" data-ui-select><option value="">All categories</option></select>
         </label>
         <label for="sort-select">
           <span>Sort</span>
-          <select id="sort-select">
+          <select id="sort-select" data-ui-select>
             <option value="document">Document order</option>
             <option value="category">Category A–Z</option>
             <option value="title">Title A–Z</option>

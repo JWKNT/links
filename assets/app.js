@@ -120,6 +120,8 @@
     elements.search.value = "";
     elements.category.value = "";
     elements.sort.value = "document";
+    window.JehlpUI?.enhance(elements.category);
+    window.JehlpUI?.enhance(elements.sort);
     requestRender();
     elements.search.focus();
   }
@@ -148,6 +150,7 @@
         options.append(option);
       }
       elements.category.append(options);
+      window.JehlpUI?.enhance(elements.category);
       elements.total.textContent = `${state.links.length.toLocaleString()} ${state.links.length === 1 ? "link" : "links"} · ${state.categories.length.toLocaleString()} ${state.categories.length === 1 ? "category" : "categories"}`;
       renderNow();
     } catch (error) {
