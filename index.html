@@ -32,7 +32,7 @@
         <p class="total" id="total-count" aria-live="polite">Loading…</p>
       </section>
 
-      <section class="controls" aria-label="Search and sorting controls">
+      <section class="controls" aria-label="Search and sorting controls" hidden>
         <label class="search-control" for="link-search">
           <span>Search</span>
           <input id="link-search" type="search" autocomplete="off" placeholder="Title, description, category, or URL" spellcheck="false">
@@ -54,12 +54,15 @@
       </section>
 
       <p class="result-status" id="result-status" role="status" aria-live="polite"></p>
-      <div id="link-list"></div>
+      <div id="link-list" tabindex="-1"></div>
 
       <div class="empty-state" id="empty-state" hidden>
         <p>No links match this view.</p>
         <button type="button" id="empty-reset">Clear search and filters</button>
+        <button type="button" id="retry-load" hidden>Try again</button>
       </div>
+
+      <noscript><p>Enable JavaScript to load the link collection.</p></noscript>
 
       <nav class="pagination" id="pagination" aria-label="Results pages" hidden>
         <button id="previous-page" type="button">← Previous</button>

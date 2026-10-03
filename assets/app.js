@@ -4,6 +4,8 @@
   const PAGE_SIZE = 200;
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
   const elements = {
+    controls: document.querySelector(".controls"),
+    retry: document.querySelector("#retry-load"),
     search: document.querySelector("#link-search"),
     category: document.querySelector("#category-select"),
     sort: document.querySelector("#sort-select"),
@@ -127,6 +129,9 @@
   }
 
   async function load() {
+    elements.retry.hidden = true;
+    elements.total.textContent = "Loading…";
+    elements.status.textContent = "Loading the link collection…";
     try {
       const response = await fetch("data/links.json");
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -139,6 +144,8 @@
         ? "No links have been added yet."
         : "No links match this view.";
       elements.emptyReset.hidden = state.links.length === 0;
+      elements.controls.hidden = state.links.length === 0;
+      elements.status.hidden = state.links.length === 0;
 
       const options = document.createDocumentFragment();
       const counts = new Map();
@@ -159,6 +166,7 @@
       elements.empty.hidden = false;
       elements.empty.querySelector("p").textContent = `The link collection could not be loaded (${error.message}).`;
       elements.emptyReset.hidden = true;
+      elements.retry.hidden = false;
     }
   }
 
@@ -176,6 +184,12 @@
   });
   elements.reset.addEventListener("click", resetControls);
   elements.emptyReset.addEventListener("click", resetControls);
+  elements.retry.addEventListener("click", async () => {
+    await load();
+    if (!elements.retry.hidden) elements.retry.focus();
+    else if (!elements.controls.hidden) elements.search.focus();
+    else elements.list.focus();
+  });
   elements.previous.addEventListener("click", () => {
     state.page -= 1;
     requestRender({ resetPage: false });
@@ -187,7 +201,7 @@
     elements.status.scrollIntoView({ block: "start" });
   });
   document.addEventListener("keydown", (event) => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === "k") {
+    if (!elements.controls.hidden && (event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === "k") {
       event.preventDefault();
       elements.search.focus();
       elements.search.select();
