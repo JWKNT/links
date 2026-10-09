@@ -90,3 +90,9 @@ test('the page retains native Home in its existing header settings', async () =>
   assert.ok(html.includes('base.css?v=20260930-mobile-header'));
   assert.ok(html.includes('theme.js?v=20260930-header-home'));
 });
+
+test("identity is plain text without a repeated collection description", async () => {
+  const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
+  assert.match(html, /<h1 class="site-title" id="page-title">Links<\/h1>/);
+  assert.doesNotMatch(html, /<p>A personal collection of links and notes\.<\/p>/);
+});
