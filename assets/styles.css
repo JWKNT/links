@@ -218,7 +218,7 @@ a:focus-visible {
 }
 
 @media (max-width: 720px) {
-  .link-shell {
+  .site-footer, .link-shell {
     width: min(100% - 28px, 860px);
   }
 

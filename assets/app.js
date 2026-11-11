@@ -146,6 +146,8 @@
       elements.emptyReset.hidden = state.links.length === 0;
       elements.controls.hidden = state.links.length === 0;
       elements.status.hidden = state.links.length === 0;
+      // An empty collection states that once, in the message. It needs no count of zero.
+      elements.total.closest(".intro").hidden = state.links.length === 0;
 
       const options = document.createDocumentFragment();
       const counts = new Map();
